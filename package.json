@@ -1,16 +1,16 @@
 {
-  "name": "app",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "JGO",
-  "license": "",
+  "name": "apihaurora",
+  "version": "0.0.0",
+  "description": "<Description about your application>",
+  "main": "server.js",
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.3",
-    "mongoose": "^5.0.11"
-  }
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mssql": "^3.3.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "JENNIFER GONZALEZ <jgonzal10@gmail.com>",
+  "license": "ISC"
 }
