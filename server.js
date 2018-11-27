@@ -2,10 +2,10 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var sql = require("mssql");
-var app = express(); 
+var app = express();
 
 // Body Parser Middleware
-app.use(bodyParser.json()); 
+app.use(bodyParser.json());
 
 
 
@@ -21,42 +21,42 @@ app.use(function (req, res, next) {
 
 
 //Setting up server
- var server = app.listen(process.env.PORT || 8080, function () {
+var server = app.listen(process.env.PORT || 8080, function () {
     var port = server.address().port;
     console.log("App now running on port", port);
- });
+});
 
 //Initiallising connection string
 var dbConfig = {
-    user:  "sa",
+    user: "sa",
     password: "jgodev1037",
     server: "localhost",
-    database:"oncopro",    
+    database: "oncopro",
 };
 
 //Function to connect to database and execute query
-var  executeQuery = function(res, query){             
-     sql.connect(dbConfig, function (err) {
-         if (err) {   
-                     console.log("Error while connecting database :- " + err);
-                     res.send(err);
-                  }
-                  else {
-                         // create Request object
-                         var request = new sql.Request();
-                         // query to the database
-                         request.query(query, function (err, rs) {
-                           if (err) {
-                                      console.log("Error while querying database :- " + err);
-                                      res.send(err);
-                                     }
-                                     else {
-                                         console.log('db connection ',res)
-                                         res.send(rs);
-                                            }
-                               });
-                       }
-      });           
+var executeQuery = function (res, query) {
+    sql.connect(dbConfig, function (err) {
+        if (err) {
+            console.log("Error while connecting database :- " + err);
+            res.send(err);
+        }
+        else {
+            // create Request object
+            var request = new sql.Request();
+            // query to the database
+            request.query(query, function (err, rs) {
+                if (err) {
+                    console.log("Error while querying database :- " + err);
+                    res.send(err);
+                }
+                else {
+                    //   console.log('db connection ',res)
+                    res.send(rs);
+                }
+            });
+        }
+    });
 }
 
 
@@ -65,28 +65,52 @@ var  executeQuery = function(res, query){
  * Patients EndPoints
  */
 
- 
-app.get("/api/patient", function(req , res){
+
+app.get("/api/patients", function (req, res) {
     var query = "SELECT [patientId]    ,[patientName]    ,[patientGender]    ,[patientAge]    ,[patientWeight]    ,[patientHeight]    ,[patientCorporalSurfice]    ,[idNumber]    ,[patientLastName] FROM [dbo].[Patient]";
-    executeQuery (res, query);
+    executeQuery(res, query);
+});
+
+app.get("/api/patient/:patientId/", function (req, res) {
+    console.log(req.params)
+    var query = "SELECT [patientId]    ,[patientName]    ,[patientGender]    ,[patientAge]    ,[patientWeight]    ,[patientHeight]    ,[patientCorporalSurfice]    ,[idNumber]    ,[patientLastName] FROM [dbo].[Patient] where patientId = " + req.params.patientId;
+    executeQuery(res, query);
 });
 
 
- app.post("/api/patient", function(req , res){
-               var query = "INSERT INTO [dbo].[Patient]               ([patientName]               ,[patientGender]               ,[patientAge]               ,[patientWeight]               ,[patientHeight]               ,[patientCorporalSurfice]               ,[idNumber]               ,[patientLastName])         VALUES               ('kim Gibson'               ,'f'               ,2324               ,'f'               ,'56'               ,'45'               ,34324               ,'thomson')";
-             executeQuery (res, query);
-});
-
-app.put("/api/patient/:patientId", function(req , res){
-    console.log(req)
-    var query = "UPDATE [dbo].[Patient]    SET [patientName] = 'Gracia'       ,[patientGender] = 'f'       ,[patientAge] = 43       ,[patientWeight] = '54'       ,[patientHeight] = '65'       ,[patientCorporalSurfice] = '43'       ,[idNumber] = '3234656'       ,[patientLastName] = 'Resende'  WHERE [patientId] =" +req.params.patientId;
+app.post("/api/patient", function (req, res) {
+    console.log(`insert`)
+    console.log(req.body)
+    var name = req.body.patientName;
+    var query = "INSERT INTO [dbo].[Patient]  ([patientName],[patientGender] ,[patientAge],[patientWeight],[patientHeight],[patientCorporalSurfice],[idNumber],[patientLastName]) VALUES ('"+req.body.patientName+"','"+  req.body.patientGender + " ',' " +req.body.patientAge + " ',' " +req.body.patientWeight + " ',' " +req.body.patientHeight + " ',' " +req.body.patientCorporalSurfice + " ',' " +req.body.idNumber + " ',' " + req.body.patientLastName+"')";
     console.log(query)
-    executeQuery (res, query);
+    executeQuery(res, query);
 });
 
-app.delete("/api/patient/:patientId", function(req , res){
+
+
+
+app.put("/api/patient/:patientId", function (req, res) {
+
+    var query = "UPDATE [dbo].[Patient]    SET [patientName] = 'Gracia'       ,[patientGender] = 'f'       ,[patientAge] = 43       ,[patientWeight] = '54'       ,[patientHeight] = '65'       ,[patientCorporalSurfice] = '43'       ,[idNumber] = '3234656'       ,[patientLastName] = 'Resende'  WHERE [patientId] =" + req.params.patientId;
+    console.log(query)
+    executeQuery(res, query);
+});
+
+app.delete("/api/patient/:patientId", function (req, res) {
     console.log(req.params)
     console.log()
     var query = "DELETE FROM [dbo].[Patient] WHERE [patientId]=" + req.params.patientId;
-    executeQuery (res, query);
+    executeQuery(res, query);
 });
+
+
+/**
+ * STORE PROCEDURE
+ */
+
+
+/**
+ * Medicine end points
+ *
+ */
