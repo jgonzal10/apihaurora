@@ -79,9 +79,6 @@ app.get("/api/patient/:patientId/", function (req, res) {
 
 
 app.post("/api/patient", function (req, res) {
-    console.log(`insert`)
-    console.log(req.body)
-    var name = req.body.patientName;
     var query = "INSERT INTO [dbo].[Patient]  ([patientName],[patientGender] ,[patientAge],[patientWeight],[patientHeight],[patientCorporalSurfice],[idNumber],[patientLastName]) VALUES ('"+req.body.patientName+"','"+  req.body.patientGender + " ',' " +req.body.patientAge + " ',' " +req.body.patientWeight + " ',' " +req.body.patientHeight + " ',' " +req.body.patientCorporalSurfice + " ',' " +req.body.idNumber + " ',' " + req.body.patientLastName+"')";
     console.log(query)
     executeQuery(res, query);
@@ -91,26 +88,15 @@ app.post("/api/patient", function (req, res) {
 
 
 app.put("/api/patient/:patientId", function (req, res) {
-
-    var query = "UPDATE [dbo].[Patient]    SET [patientName] = 'Gracia'       ,[patientGender] = 'f'       ,[patientAge] = 43       ,[patientWeight] = '54'       ,[patientHeight] = '65'       ,[patientCorporalSurfice] = '43'       ,[idNumber] = '3234656'       ,[patientLastName] = 'Resende'  WHERE [patientId] =" + req.params.patientId;
+    console.log(req)
+  //  console.log(res)
+    var query = "UPDATE [dbo].[Patient]    SET [patientName] = '"+req.body.patientName+"' ,[patientGender] = '"+req.body.patientGender+"',[patientAge] = "+req.body.patientAge+" ,[patientWeight] = "+req.body.patientWeight+" ,[patientHeight] = "+req.body.patientName+",[patientCorporalSurfice] = '"+req.body.patientCorporalSurfice+"'  ,[idNumber] = "+req.body.idNumber+",[patientLastName] = '"+req.body.patientLastName+"'  WHERE [patientId] =" + req.params.patientId;
     console.log(query)
     executeQuery(res, query);
 });
 
 app.delete("/api/patient/:patientId", function (req, res) {
-    console.log(req.params)
-    console.log()
+
     var query = "DELETE FROM [dbo].[Patient] WHERE [patientId]=" + req.params.patientId;
     executeQuery(res, query);
 });
-
-
-/**
- * STORE PROCEDURE
- */
-
-
-/**
- * Medicine end points
- *
- */
