@@ -6,8 +6,11 @@ var app = express();
 
 // Body Parser Middleware
 app.use(bodyParser.json());
-
-
+var patientController = require('./controller/PatientController')();
+var medicineController = require('./controller/MedicineController')();
+var schemaController = require('./controller/SchemaController')();
+var preparationController = require('./controller/PreparationController')();
+var practicalDoseController = require('./controller/PracticalDoseController')();
 
 //CORS Middleware
 app.use(function (req, res, next) {
@@ -26,77 +29,23 @@ var server = app.listen(process.env.PORT || 8080, function () {
     console.log("App now running on port", port);
 });
 
-//Initiallising connection string
-var dbConfig = {
-    user: "sa",
-    password: "jgodev1037",
-    server: "localhost",
-    database: "oncopro",
-};
 
-//Function to connect to database and execute query
-var executeQuery = function (res, query) {
-    sql.connect(dbConfig, function (err) {
-        if (err) {
-            console.log("Error while connecting database :- " + err);
-            res.send(err);
-        }
-        else {
-            // create Request object
-            var request = new sql.Request();
-            // query to the database
-            request.query(query, function (err, rs) {
-                if (err) {
-                    console.log("Error while querying database :- " + err);
-                    res.send(err);
-                }
-                else {
-                    //   console.log('db connection ',res)
-                    res.send(rs);
-                }
-            });
-        }
-    });
-}
+
+app.use("/api/patient", patientController);
+app.use("/api/medicine", medicineController);
+app.use("/api/schema", schemaController);
+app.use("/api/preparation", preparationController);
+app.use("/api/practicalDose", practicalDoseController);
 
 
 /**
  * 
  * Patients EndPoints
  */
-
-
-app.get("/api/patients", function (req, res) {
-    var query = "SELECT [patientId]    ,[patientName]    ,[patientGender]    ,[patientAge]    ,[patientWeight]    ,[patientHeight]    ,[patientCorporalSurfice]    ,[idNumber]    ,[patientLastName] FROM [dbo].[Patient]";
-    executeQuery(res, query);
-});
-
-app.get("/api/patient/:patientId/", function (req, res) {
-    console.log(req.params)
-    var query = "SELECT [patientId]    ,[patientName]    ,[patientGender]    ,[patientAge]    ,[patientWeight]    ,[patientHeight]    ,[patientCorporalSurfice]    ,[idNumber]    ,[patientLastName] FROM [dbo].[Patient] where patientId = " + req.params.patientId;
-    executeQuery(res, query);
-});
-
-
-app.post("/api/patient", function (req, res) {
-    var query = "INSERT INTO [dbo].[Patient]  ([patientName],[patientGender] ,[patientAge],[patientWeight],[patientHeight],[patientCorporalSurfice],[idNumber],[patientLastName]) VALUES ('"+req.body.patientName+"','"+  req.body.patientGender + " ',' " +req.body.patientAge + " ',' " +req.body.patientWeight + " ',' " +req.body.patientHeight + " ',' " +req.body.patientCorporalSurfice + " ',' " +req.body.idNumber + " ',' " + req.body.patientLastName+"')";
-    console.log(query)
-    executeQuery(res, query);
+app.get("/", function (req, res) {
+    res.send('Welcome to Haurora')
 });
 
 
 
 
-app.put("/api/patient/:patientId", function (req, res) {
-    console.log(req)
-  //  console.log(res)
-    var query = "UPDATE [dbo].[Patient]    SET [patientName] = '"+req.body.patientName+"' ,[patientGender] = '"+req.body.patientGender+"',[patientAge] = "+req.body.patientAge+" ,[patientWeight] = "+req.body.patientWeight+" ,[patientHeight] = "+req.body.patientName+",[patientCorporalSurfice] = '"+req.body.patientCorporalSurfice+"'  ,[idNumber] = "+req.body.idNumber+",[patientLastName] = '"+req.body.patientLastName+"'  WHERE [patientId] =" + req.params.patientId;
-    console.log(query)
-    executeQuery(res, query);
-});
-
-app.delete("/api/patient/:patientId", function (req, res) {
-
-    var query = "DELETE FROM [dbo].[Patient] WHERE [patientId]=" + req.params.patientId;
-    executeQuery(res, query);
-});
